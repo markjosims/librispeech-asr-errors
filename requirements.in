@@ -2,3 +2,5 @@ transformers
 nltk
 wordfreq
 jiwer
+torch
+pandas
