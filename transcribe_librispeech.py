@@ -1,5 +1,5 @@
 import os
-from transformers import AutomaticSpeechRecognitionPipeline
+from transformers import pipeline
 import argparse
 from typing import Tuple, Generator
 import torch
@@ -80,7 +80,8 @@ def transcribe_librispeech(args) -> int:
     recordings, transcriptions = unzip(example_tuples)
 
     print("Transcribing...")
-    pipe = AutomaticSpeechRecognitionPipeline(
+    pipe = pipeline(
+        "automatic-speech-recognition",
         args.model,
         device=args.device
     )
