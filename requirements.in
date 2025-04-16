@@ -4,3 +4,4 @@ wordfreq
 jiwer
 torch
 pandas
+tqdm
