@@ -104,7 +104,7 @@ def transcribe_librispeech(args) -> int:
     hypotheses = []
     num_batches = math.ceil(len(ds)/args.batch_size)
     for batch in tqdm(dataloader(ds, args.batch_size), total=num_batches):
-        pipe_output = pipe(batch['audio'])
+        pipe_output = pipe(batch['audio'], return_timestamps=True)
         hypotheses.extend(output['text'] for output in pipe_output)
 
     df = pd.DataFrame({'reference': transcriptions, 'hypothesis': hypotheses})
