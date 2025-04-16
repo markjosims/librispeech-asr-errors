@@ -54,15 +54,18 @@ def dataset_generator(libris_split_dir: str) -> Generator[Tuple[str, str], None,
         if not transcription_files:
             continue
         if len(transcription_files)>1:
-            raise ValueError(f"Found multiple transcription files in directory {root}")
-        transcription = transcription_files[0]
+            raise FileNotFoundError(f"Found multiple transcription files in directory {root}")
+        transcription = os.path.join(root, transcription_files[0])
         with open(transcription) as fh:
             lines = fh.readlines()
             for line in lines:
                 recording_stem = line.split()[0]
-                recording_file = [file for file in filenames if recording_stem in file][0]
+                recording_files = [file for file in filenames if file.startswith(recording_stem)]
+                if len(recording_files)!=1:
+                    raise FileNotFoundError(f"Expected 1 recording starting with {recording_stem}")
+                recording = os.path.join(root, recording_files[0])
                 transcription = " ".join(line.split()[1:])
-                yield recording_file, transcription
+                yield recording, transcription
 
 def unzip(zipped_list):
     return list(zip(*zipped_list))
