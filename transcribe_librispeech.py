@@ -80,7 +80,7 @@ def transcribe_librispeech(args) -> int:
     recordings, transcriptions = unzip(example_tuples)
 
     print("Transcribing...")
-    pipe = AutomaticSpeechRecognitionPipeline.from_pretrained(
+    pipe = AutomaticSpeechRecognitionPipeline(
         args.model,
         device=args.device
     )
