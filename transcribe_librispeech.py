@@ -75,7 +75,7 @@ def unzip(zipped_list):
 
 def dataloader(dataset: Dataset, batch_size: int) -> Generator[Dataset, None, None]:
     indices = range(len(dataset))
-    for start_index in range(0, len(dataset), step=batch_size):
+    for start_index in range(0, len(dataset), batch_size):
         end_index = start_index+batch_size
         yield dataset.select(indices[start_index:end_index])
 
