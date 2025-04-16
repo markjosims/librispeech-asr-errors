@@ -49,17 +49,20 @@ def dataset_generator(libris_split_dir: str) -> Generator[Tuple[str, str], None,
     Generator object yielding tuples of `(recording_path,transcription)` for all examples
     in a LibriSpeech split directory.
     """
-    for speaker_dir in os.listdir(libris_split_dir):
-        for chapter_dir in os.listdir(speaker_dir):
-            chapter_files = os.listdir(chapter_dir)
-            transcription = [file for file in chapter_files if file.endswith('.trans.txt')][0]
-            with open(transcription) as fh:
-                lines = fh.readlines()
-                for line in lines:
-                    recording_stem = line.split()[0]
-                    recording_file = [file for file in chapter_files if recording_stem in file][0]
-                    transcription = " ".join(line.split()[1:])
-                    yield recording_file, transcription
+    for root, _, filenames in os.walk(libris_split_dir):
+        transcription_files = [file for file in filenames if file.endswith('.trans.txt')]
+        if not transcription_files:
+            continue
+        if len(transcription_files)>1:
+            raise ValueError(f"Found multiple transcription files in directory {root}")
+        transcription = transcription_files[0]
+        with open(transcription) as fh:
+            lines = fh.readlines()
+            for line in lines:
+                recording_stem = line.split()[0]
+                recording_file = [file for file in filenames if recording_stem in file][0]
+                transcription = " ".join(line.split()[1:])
+                yield recording_file, transcription
 
 def unzip(zipped_list):
     return list(zip(*zipped_list))
