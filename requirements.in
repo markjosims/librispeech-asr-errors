@@ -1,5 +1,4 @@
 transformers
-datasets
 nltk
 wordfreq
 jiwer
