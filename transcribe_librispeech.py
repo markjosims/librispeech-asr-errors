@@ -44,7 +44,7 @@ def init_parser():
     )
     return parser
 
-def dataset_generator(libris_split_dir: str) -> Generator[Tuple[str, str]]:
+def dataset_generator(libris_split_dir: str) -> Generator[Tuple[str, str], None, None]:
     """
     Generator object yielding tuples of `(recording_path,transcription)` for all examples
     in a LibriSpeech split directory.
