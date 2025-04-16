@@ -5,6 +5,7 @@ from typing import Tuple, Generator
 import torch
 import pandas as pd
 import jiwer
+from tqdm import tqdm
 
 LIBRISPEECH = os.environ.get('LIBRISPEECH')
 DEVICE = 0 if torch.cuda.is_available() else 'cpu'
@@ -27,13 +28,6 @@ def init_parser():
         "-m",
         help="Path to HuggingFace transformers model to use for transcription.",
         default="openai/whisper-large-v2"
-    )
-    parser.add_argument(
-        "--batch_size",
-        "-b",
-        help="Number of examples to process at a time.",
-        default=32,
-        type=int,
     )
     parser.add_argument(
         "--device",
@@ -85,7 +79,8 @@ def transcribe_librispeech(args) -> int:
         args.model,
         device=args.device
     )
-    pipe_output = pipe(recordings, batch_size=args.batch_size)
+    for recording in tqdm(recordings):
+        pipe_output = pipe(recording)
     hypotheses = [output['text'] for output in pipe_output]
 
     df = pd.DataFrame({'reference': transcriptions, 'hypothesis': hypotheses})
