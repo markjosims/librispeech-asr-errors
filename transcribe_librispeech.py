@@ -86,8 +86,8 @@ def get_audio_dataset(recordings: List[str]) -> Dataset:
 def get_pipe_kwargs(model: str) -> Dict[str, Any]:
     if 'whisper' in model:
         return {
-            'language': 'english',
             'return_timestamps': True,
+            'generate_kwargs': {'language': 'english'},
         }
     # HuBERT and wav2vec2 are CTC models
     return {
