@@ -188,7 +188,7 @@ def add_wordfreq(word_df):
     for word_col in ['word', 'prev_word', 'next_word']:
         word_df[word_col+'_zipf_freq'] = word_df[word_col].apply(lambda w: zipf_frequency(w, 'en'))
         pad_token_mask = word_df[word_col].isin(['<s>', '</s>'])
-        word_df.loc[pad_token_mask, word_col+'_zip_freq'] = -1
+        word_df.loc[pad_token_mask, word_col+'_zipf_freq'] = -1
     return word_df
 
 def transcribe_librispeech(args) -> int:
@@ -221,6 +221,14 @@ def transcribe_librispeech(args) -> int:
     ref_edits, hyp_edits = get_edits(refs_nmzd, hyps_nmzd)
     overall_wer = jiwer.wer(refs_nmzd, hyps_nmzd)
 
+    print("Making dataframe for sentences...")
+    sentence_df = pd.DataFrame({
+        "reference": transcriptions,
+        "hypothesis": hypotheses,
+        "reference_normalized": refs_nmzd,
+        "hypothesis_normalized": hyps_nmzd,
+    })
+
     print("Making dataframe for each word in references...")
     ref_df = get_word_df(refs_nmzd, ref_edits)
     hyp_df = get_word_df(hyps_nmzd, hyp_edits)
@@ -236,6 +244,7 @@ def transcribe_librispeech(args) -> int:
     model_basename = os.path.basename(args.model)
     os.makedirs('data', exist_ok=True)
     output_stem = os.path.join("data" ,f"{args.split}-{model_basename}")
+    sentence_df.to_csv(output_stem+'-sentences.csv')
     ref_df.to_csv(output_stem+'-references.csv')
     hyp_df.to_csv(output_stem+'-hypotheses.csv')
 
