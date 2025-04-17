@@ -6,3 +6,4 @@ torch
 pandas
 tqdm
 datasets
+numpy
