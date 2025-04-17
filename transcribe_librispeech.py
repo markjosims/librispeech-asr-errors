@@ -230,7 +230,8 @@ def transcribe_librispeech(args) -> int:
 
     print("Saving output...")
     model_basename = os.path.basename(args.model)
-    output_stem = f"{args.split}-{model_basename}"
+    os.makedirs('data', exist_ok=True)
+    output_stem = os.path.join("data" ,f"{args.split}-{model_basename}")
     ref_df.to_csv(output_stem+'-references.csv')
     hyp_df.to_csv(output_stem+'-hypotheses.csv')
 
