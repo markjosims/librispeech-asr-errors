@@ -12,6 +12,7 @@ import numpy as np
 from nltk.util import ngrams
 from nltk import pos_tag
 from wordfreq import zipf_frequency
+import json
 
 LIBRISPEECH = os.environ.get('LIBRISPEECH')
 DEVICE = 0 if torch.cuda.is_available() else 'cpu'
@@ -216,6 +217,7 @@ def transcribe_librispeech(args) -> int:
     refs_nmzd = whisper_normalize(transcriptions)
     hyps_nmzd = whisper_normalize(hypotheses)
     ref_edits, hyp_edits = get_edits(refs_nmzd, hyps_nmzd)
+    overall_wer = jiwer.wer(refs_nmzd, hyps_nmzd)
 
     print("Making dataframe for each word in references...")
     ref_df = get_word_df(refs_nmzd, ref_edits)
@@ -234,6 +236,20 @@ def transcribe_librispeech(args) -> int:
     output_stem = os.path.join("data" ,f"{args.split}-{model_basename}")
     ref_df.to_csv(output_stem+'-references.csv')
     hyp_df.to_csv(output_stem+'-hypotheses.csv')
+
+    wer_json = {
+        'model': args.model,
+        'split': args.split,
+        'wer': overall_wer,
+    }
+    wer_json_path = os.path.join('data', 'wer.json')
+    wer_json_series = []
+    if os.path.exists(wer_json_path):
+        with open(wer_json_path) as f:
+            wer_json_series = json.load(f)
+    wer_json_series.append(wer_json)
+    with open(wer_json_path, 'w') as f:
+        json.dump(wer_json_series, f)
 
     return 0
 
