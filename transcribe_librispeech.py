@@ -162,13 +162,15 @@ def get_word_df(sentences, edits):
         'prev_word': [],
         'next_word': [],
         'edit_type': [],
+        'sentence': [],
     }
-    for sent_edit, sent_3gram in zip(edits, sent_3grams):
+    for sent_edit, sent_3gram, sent in zip(edits, sent_3grams, sentences):
         rows['edit_type'].extend(sent_edit)
         prev_words, words, next_words = unzip(sent_3gram)
         rows['prev_word'].extend(prev_words)
         rows['word'].extend(words)
         rows['next_word'].extend(next_words)
+        rows['sentence'].extend([sentences]*len(sent_edit))
     df = pd.DataFrame(rows)
     return df
 
