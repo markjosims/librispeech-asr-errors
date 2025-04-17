@@ -1,7 +1,7 @@
 import os
 from transformers import pipeline
 import argparse
-from typing import Tuple, Generator, List
+from typing import Tuple, Generator, List, Dict, Any
 import torch
 import pandas as pd
 import jiwer
@@ -84,6 +84,18 @@ def get_audio_dataset(recordings: List[str]) -> Dataset:
     ds = ds.cast_column('audio', Audio(sampling_rate=16_000))
     return ds
 
+def get_pipe_kwargs(model: str) -> Dict[str, Any]:
+    if 'whisper' in model:
+        return {
+            'language': 'english',
+            'return_timestamps': True,
+        }
+    # HuBERT and wav2vec2 are CTC models
+    return {
+        'chunk_length_s': 10,
+        'stride_length_s': (4, 2),
+    }
+
 def transcribe_librispeech(args) -> int:
     """
     
@@ -103,8 +115,9 @@ def transcribe_librispeech(args) -> int:
     print("Transcribing...")
     hypotheses = []
     num_batches = math.ceil(len(ds)/args.batch_size)
+    pipe_kwargs = get_pipe_kwargs(args.model)
     for batch in tqdm(dataloader(ds, args.batch_size), total=num_batches):
-        pipe_output = pipe(batch['audio'], return_timestamps=True)
+        pipe_output = pipe(batch['audio'], **pipe_kwargs)
         hypotheses.extend(output['text'] for output in pipe_output)
 
     df = pd.DataFrame({'reference': transcriptions, 'hypothesis': hypotheses})
