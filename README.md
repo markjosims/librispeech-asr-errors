@@ -12,22 +12,28 @@ Models were evaluated on the **dev-clean** and **test-clean** partitions of Libr
 Data are stored in the `data.tar.gz` file. When unzipped the following directory will appear:
 
 ```
-.
-├── wer.json
+data/
+├── wer.json  
 ├── dev/
 │   ├── dev-clean-hubert-xlarge-ls960-ft-hypotheses.csv
 │   ├── dev-clean-hubert-xlarge-ls960-ft-references.csv
+│   ├── dev-clean-hubert-xlarge-ls960-ft-sentences.csv
 │   ├── dev-clean-wav2vec2-large-960h-lv60-hypotheses.csv
 │   ├── dev-clean-wav2vec2-large-960h-lv60-references.csv
+│   ├── dev-clean-wav2vec2-large-960h-lv60-sentences.csv
 │   ├── dev-clean-whisper-large-v2-hypotheses.csv
-│   └── dev-clean-whisper-large-v2-references.csv
+│   ├── dev-clean-whisper-large-v2-references.csv
+│   └── dev-clean-whisper-large-v2-sentences.csv
 └── test/
     ├── test-clean-hubert-xlarge-ls960-ft-hypotheses.csv
     ├── test-clean-hubert-xlarge-ls960-ft-references.csv
+    ├── test-clean-hubert-xlarge-ls960-ft-sentences.csv
     ├── test-clean-wav2vec2-large-960h-lv60-hypotheses.csv
     ├── test-clean-wav2vec2-large-960h-lv60-references.csv
+    ├── test-clean-wav2vec2-large-960h-lv60-sentences.csv
     ├── test-clean-whisper-large-v2-hypotheses.csv
-    └── test-clean-whisper-large-v2-references.csv
+    ├── test-clean-whisper-large-v2-references.csv
+    └── test-clean-whisper-large-v2-sentences.csv
 ```
 
 - `wer.json` contains the word error rate for each model on the dev-clean and test-clean datasets.
