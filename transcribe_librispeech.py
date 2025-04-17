@@ -1,5 +1,5 @@
 import os
-from transformers import pipeline
+from transformers import pipeline, WhisperTokenizer
 import argparse
 from typing import Tuple, Generator, List, Dict, Any
 import torch
@@ -94,6 +94,10 @@ def get_pipe_kwargs(model: str) -> Dict[str, Any]:
         'chunk_length_s': 10,
         'stride_length_s': (4, 2),
     }
+
+def whisper_normalize(sentences: List[str]) -> List[str]:
+    tokenizer = WhisperTokenizer.from_pretrained('openai/whisper-large-v2')
+    return [tokenizer.normalize(sent) for sent in sentences]
 
 def get_edits(reference_list, hypothesis_list):
     """
@@ -209,11 +213,13 @@ def transcribe_librispeech(args) -> int:
         hypotheses.extend(output['text'] for output in pipe_output)
 
     print("Computing WER...")
-    ref_edits, hyp_edits = get_edits(transcriptions, hypotheses)
+    refs_nmzd = whisper_normalize(transcriptions)
+    hyps_nmzd = whisper_normalize(hypotheses)
+    ref_edits, hyp_edits = get_edits(refs_nmzd, hyps_nmzd)
 
     print("Making dataframe for each word in references...")
-    ref_df = get_word_df(transcriptions, ref_edits)
-    hyp_df = get_word_df(hypotheses, hyp_edits)
+    ref_df = get_word_df(refs_nmzd, ref_edits)
+    hyp_df = get_word_df(hyps_nmzd, hyp_edits)
 
     print("Tagging for part of speech and Zipf frequency...")
     ref_df = add_pos(ref_df)
