@@ -111,7 +111,8 @@ def transcribe_librispeech(args) -> int:
 
     print("Computing WER...")
     df['wer'] = df.apply(
-        lambda row: jiwer.wer(row['reference'], row['hypothesis'])
+        lambda row: jiwer.wer(row['reference'], row['hypothesis']),
+        axis=1,
     )
 
     print("Saving output...")
