@@ -70,7 +70,7 @@ def dataset_generator(libris_split_dir: str) -> Generator[Tuple[str, str], None,
                 yield recording, transcription
 
 def unzip(zipped_list):
-    return list(zip(*zipped_list))
+    return [list(unzipped) for unzipped in zip(*zipped_list)]
 
 def dataloader(dataset: Dataset, batch_size: int) -> Generator[Dataset, None, None]:
     indices = range(len(dataset))
