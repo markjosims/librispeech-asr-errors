@@ -4,6 +4,6 @@ HuBERT=facebook/hubert-xlarge-ls960-ft
 WHISPER=openai/whisper-large-v2
 for split in dev-clean test-clean; do
     for model in $W2V2 $HuBERT $WHISPER; do
-        python transcribe_librispeech.py -m $MODEL -s $split
+        python transcribe_librispeech.py -m $model -s $split
     done
 done
