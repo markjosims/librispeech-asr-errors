@@ -44,7 +44,6 @@ data/
     - hypothesis_normalized: The predicted ASR transcription with Whisper string normalization applied
 - The `-references.csv` and `-hypotheses.csv` files contain the following columns:
     - word: an individual word from a given reference or hypothesis sentence
-    - sentence: the entire reference or hypothesis sentence
     - prev_word: the preceding word, or `<s>` for beginning of sentence
     - next_word: the following word, or `</s>` for end of sentence
     - edit_type: 0 for hit (correct prediction), 1 for substitution, 2 for deletion (only applies to reference words), 3 for insertion (only applies to hypothesis words)
